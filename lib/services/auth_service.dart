@@ -47,6 +47,7 @@ class AuthService extends GetxController {
   Future<void> checkLoginStatus() async {
     if (box.read('token') != null) {
       isLogged.value = true;
+      //Get.put(ApiService());
     }
     await Future.delayed(const Duration(seconds: 3));
   }
@@ -69,6 +70,7 @@ class AuthService extends GetxController {
             box.write('user', json['user']);
             Get.back();
             isLogged.value = true;
+            //Get.put(ApiService());
             Get.offAll(const PgHome());
             snackBar(
               title: "Bienvenu sur MON GARAGE !",
@@ -80,7 +82,6 @@ class AuthService extends GetxController {
           case false:
             Get.back();
             errorDialog(
-              errorTitle: "Echec de connexion !",
               errorText: json['error'] ??
                   "Informations non valide ou Utilisateur inexistant",
             );
@@ -134,35 +135,43 @@ class AuthService extends GetxController {
       required String telephone,
       required String email,
       required String motdepasse}) async {
-    loadingCircular();
-
     if (keyFormRegister.currentState!.validate()) {
-      var body = {
-        'name': nomComplet,
-        'telephone': telephone,
-        'email': email,
-        'password': motdepasse,
-      };
-      final response = await authApi.post('/register', data: body);
-      final json = response.data;
-      print(json);
-      switch (json['status']) {
-        case true:
-          final box = GetStorage();
-          box.write('token', json['access_token']);
-          box.write('user', json['user']);
-          Get.back();
-          isLogged.value = true;
-          Get.offAll(const PgHome());
-
-          break;
-        case false:
-          Get.back();
-          errorDialog();
-          break;
+      loadingCircular();
+      try {
+        var body = {
+          'name': nomComplet,
+          'telephone': telephone,
+          'email': email,
+          'password': motdepasse,
+        };
+        final response = await authApi.post('/register', data: body);
+        final json = response.data;
+        print(json);
+        switch (json['status']) {
+          case true:
+            final box = GetStorage();
+            box.write('token', json['access_token']);
+            box.write('user', json['user']);
+            isLogged.value = true;
+            Get.back();
+            Get.offAll(const PgHome());
+            snackBar(
+              title: "Bienvenu sur MON GARAGE !",
+              subtitle: "Votre compte a bien été créé.",
+              type: ToastificationType.info,
+            );
+            onClose();
+            break;
+          case false:
+            Get.back();
+            errorDialog();
+            break;
+        }
+      } catch (e) {
+        Get.back();
+        errorDialog();
       }
     } else {
-      Get.back();
       errorDialog(errorText: "Veuillez saisir des informations correctes svp!");
     }
   }

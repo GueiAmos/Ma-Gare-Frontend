@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class WdgBody extends StatelessWidget {
-  final Widget child, floatingActionButton, drawer;
+  final Widget child;
+  final Widget? drawer, floatingActionButton;
   final PreferredSizeWidget appBar;
-  final bool isDrawer;
   const WdgBody({
     super.key,
     required this.appBar,
     required this.child,
-    this.isDrawer = true,
-    this.floatingActionButton = const SizedBox(),
-    this.drawer = const SizedBox(),
+    this.floatingActionButton,
+    this.drawer,
   });
 
   @override
@@ -19,7 +18,7 @@ class WdgBody extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       appBar: appBar,
-      drawer: isDrawer ? drawer : null,
+      drawer: drawer,
       body: Stack(
         children: [
           Container(

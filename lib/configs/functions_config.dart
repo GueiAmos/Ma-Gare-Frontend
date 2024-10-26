@@ -48,10 +48,10 @@ void snackBar({
 //Afficher une boite de dialogue d'erreur
 void errorDialog({String? errorTitle, String? errorText}) {
   Get.defaultDialog(
-    title: errorTitle ?? "Echec",
+    title: errorTitle ?? "ECHEC",
     titleStyle: TextStyle(
-      color: GColor.bleu,
-      fontSize: 20,
+      color: GColor.orange,
+      fontSize: 25,
       fontWeight: FontWeight.w600,
     ),
     middleText:
